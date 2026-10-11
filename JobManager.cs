@@ -12,6 +12,45 @@ public class JobManager
         Console.WriteLine("Job application added successfully!");
     }
 
+    // Show a job application with a colored status
+    private void PrintJob(JobApplication job)
+    {
+        Console.Write($"Company: {job.CompanyName}, ");
+        Console.Write($"Position: {job.PositionTitle}, ");
+        Console.Write("Status: ");
+
+        ConsoleColor originalColor = Console.ForegroundColor;
+
+        switch (job.Status)
+        {
+            case Status.Applied:
+                Console.ForegroundColor = ConsoleColor.Blue;
+                break;
+
+            case Status.Interview:
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                break;
+
+            case Status.Offer:
+                Console.ForegroundColor = ConsoleColor.Green;
+                break;
+
+            case Status.Rejected:
+                Console.ForegroundColor = ConsoleColor.Red;
+                break;
+        }
+
+        Console.Write(job.Status);
+
+        // Restore the original console color
+        Console.ForegroundColor = originalColor;
+
+        Console.WriteLine(
+            $", Applied: {job.ApplicationDate:yyyy-MM-dd}, " +
+            $"Salary: {job.SalaryExpectation} kr"
+        );
+    }
+
     // Show all job applications
     public void ShowAll()
     {
@@ -23,7 +62,7 @@ public class JobManager
 
         foreach (JobApplication job in Applications)
         {
-            Console.WriteLine(job.GetSummary());
+            PrintJob(job);
         }
     }
 
@@ -92,7 +131,7 @@ public class JobManager
 
         foreach (JobApplication job in filteredJobs)
         {
-            Console.WriteLine(job.GetSummary());
+            PrintJob(job);
         }
     }
 
@@ -111,7 +150,7 @@ public class JobManager
 
         foreach (JobApplication job in sortedJobs)
         {
-            Console.WriteLine(job.GetSummary());
+            PrintJob(job);
         }
     }
 
@@ -150,6 +189,38 @@ public class JobManager
         {
             Console.WriteLine(
                 "Average response time: No responses yet."
+            );
+        }
+    }
+
+    // Show applications with no response after more than 14 days
+    public void ShowUnansweredApplications()
+    {
+        var unansweredJobs = Applications
+            .Where(job =>
+                job.Status == Status.Applied &&
+                !job.ResponseDate.HasValue &&
+                job.GetDaysSinceApplied() > 14)
+            .ToList();
+
+        if (unansweredJobs.Count == 0)
+        {
+            Console.WriteLine(
+                "No unanswered applications older than 14 days."
+            );
+            return;
+        }
+
+        Console.WriteLine(
+            "\n--- Unanswered Applications (More Than 14 Days) ---"
+        );
+
+        foreach (JobApplication job in unansweredJobs)
+        {
+            PrintJob(job);
+
+            Console.WriteLine(
+                $"Days since applied: {job.GetDaysSinceApplied()}"
             );
         }
     }
