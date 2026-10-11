@@ -1,4 +1,6 @@
 ﻿
+using System.Globalization;
+
 JobManager manager = new JobManager();
 
 bool running = true;
@@ -13,9 +15,10 @@ while (running)
     Console.WriteLine("5. Show statistics");
     Console.WriteLine("6. Update application status");
     Console.WriteLine("7. Remove job application");
-    Console.WriteLine("8. Exit");
+    Console.WriteLine("8. Show unanswered applications (14+ days)");
+    Console.WriteLine("9. Exit");
 
-    Console.Write("\nChoose an option (1-8): ");
+    Console.Write("\nChoose an option (1-9): ");
     string choice = Console.ReadLine() ?? "";
 
     switch (choice)
@@ -24,10 +27,38 @@ while (running)
             Console.Write("Company name: ");
             string company = Console.ReadLine() ?? "";
 
+            if (string.IsNullOrWhiteSpace(company))
+            {
+                Console.WriteLine("Company name cannot be empty.");
+                break;
+            }
+
             Console.Write("Position title: ");
             string position = Console.ReadLine() ?? "";
 
+            if (string.IsNullOrWhiteSpace(position))
+            {
+                Console.WriteLine("Position title cannot be empty.");
+                break;
+            }
+
+            Console.Write("Application date (yyyy-MM-dd): ");
+            string dateInput = Console.ReadLine() ?? "";
+
+            if (!DateTime.TryParseExact(
+                    dateInput,
+                    "yyyy-MM-dd",
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out DateTime applicationDate)
+                || applicationDate.Date > DateTime.Today)
+            {
+                Console.WriteLine("Invalid application date.");
+                break;
+            }
+
             Console.Write("Salary expectation (SEK): ");
+
             if (!int.TryParse(Console.ReadLine(), out int salary)
                 || salary < 0)
             {
@@ -40,7 +71,7 @@ while (running)
                 CompanyName = company,
                 PositionTitle = position,
                 Status = Status.Applied,
-                ApplicationDate = DateTime.Today,
+                ApplicationDate = applicationDate,
                 SalaryExpectation = salary
             };
 
@@ -111,6 +142,10 @@ while (running)
             break;
 
         case "8":
+            manager.ShowUnansweredApplications();
+            break;
+
+        case "9":
             running = false;
             Console.WriteLine("Goodbye!");
             break;
@@ -120,4 +155,3 @@ while (running)
             break;
     }
 }
-
