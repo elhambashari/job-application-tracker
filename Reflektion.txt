@@ -1,0 +1,8 @@
+1. Hur hjälpte LINQ dig att skriva renare kod?
+LINQ hjälpte mig att skriva kortare och tydligare kod. Jag kunde använda metoder som Where(), OrderBy() och Count() för att filtrera, sortera och räkna jobbansökningar utan att skriva många loopar. Det gjorde koden enklare att läsa och förstå.
+
+
+2. Vilken del av projektet var mest utmanande, och hur löste du den?
+Den mest utmanande delen var att använda LINQ och få de olika klasserna och metoderna att fungera tillsammans. Jag löste det genom att arbeta steg för steg, testa funktionerna i konsolen och rätta till fel som uppstod. Jag lärde mig också hur jag kunde använda Git och GitHub för att organisera mitt arbete med branches och Pull Requests.
+
+Elham Bashari
